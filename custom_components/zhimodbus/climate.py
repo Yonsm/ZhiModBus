@@ -2,7 +2,7 @@
 Platform for a Generic Modbus Thermostat.
 
 For more details about this platform, please refer to the documentation at
-https://yonsm.github.io/modbus
+https://github.com/Yonsm/ZhiModBus
 """
 
 import logging
@@ -147,7 +147,8 @@ class ClimateModbus():
 
     def __init__(self, hass, conf):
         self.error = 0
-        self.hub = hass.data[MODBUS_DOMAIN][conf.get(CONF_HUB)]
+        self.hass = hass
+        self._hub = conf.get(CONF_HUB)
         self.unit = hass.config.units.temperature_unit
         self.fan_modes = conf.get(CONF_FAN_MODES)
         self.hvac_modes = conf.get(CONF_HVAC_MODES)
@@ -188,6 +189,10 @@ class ClimateModbus():
                 continue
 
             self.regs[prop] = reg
+
+    @property
+    def hub(self):
+        return self.hass.data[MODBUS_DOMAIN][self._hub]
 
     def has_valid_register(self, index):
         """Check valid register."""
