@@ -1,0 +1,7 @@
+{
+	"name": "Zhi ModBus Climate",
+	"domains": ["climate"],
+	"render_readme": true,
+	"iot_class": "Local Polling"
+  }
+  

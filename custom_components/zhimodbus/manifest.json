@@ -1,0 +1,8 @@
+{
+	"domain": "zhimodbus",
+	"name": "Zhi ModBus Climate",
+	"documentation": "https://github.com/Yonsm/ZhiModBus",
+	"requirements": [],
+	"dependencies": ["modbus"],
+	"codeowners": ["@Yonsm"]
+}
