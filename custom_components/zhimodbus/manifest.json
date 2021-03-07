@@ -2,6 +2,7 @@
 	"domain": "zhimodbus",
 	"name": "Zhi ModBus Climate",
 	"documentation": "https://github.com/Yonsm/ZhiModBus",
+	"version": "1.0.1",
 	"requirements": [],
 	"dependencies": ["modbus"],
 	"codeowners": ["@Yonsm"]

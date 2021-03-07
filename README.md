@@ -1,4 +1,4 @@
-# ZhiModBus
+# [https://github.com/Yonsm/ZhiModBus](https://github.com/Yonsm/ZhiModBus)
 
 General ModBus Climate Component for HomeAssistant
 
@@ -10,7 +10,7 @@ General ModBus Climate Component for HomeAssistant
 
 ## 2. 配置方法
 
-参见[我的 Home Assistant 配置](https://github.com/Yonsm/.homeassistant)中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/main/configuration.yaml)
+参见 [我的 Home Assistant 配置](https://github.com/Yonsm/.homeassistant) 中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/main/configuration.yaml)
 
 ```
 modbus:
@@ -64,8 +64,8 @@ climate:
 { registers: [3, 6, 9, 12], register_type: input|holding|coil, slave:1, scale: 0.1, data_type: float|int|uint|custom, count: 1, structure: '>i'}
 ```
 
-![PREVIEW1](PREVIEW1.jpg)
-![PREVIEW2](PREVIEW2.jpg)
+![PREVIEW1](https://github.com/Yonsm/ZhiModBus/blob/main/PREVIEW1.jpg)
+![PREVIEW2](https://github.com/Yonsm/ZhiModBus/blob/main/PREVIEW2.jpg)
 
 ## 3. 需要的 ModBus RTU 模块
 
@@ -73,8 +73,8 @@ climate:
 
 网上没有现成的方案，过程中全部自己接线、调试，差点快被难度吓到放弃了——终于搞定了，简直是不可能完成的任务...
 
-![PREVIEW3](PREVIEW3.jpg)
-![PREVIEW4](PREVIEW4.jpg)
+![PREVIEW3](https://github.com/Yonsm/ZhiModBus/blob/main/PREVIEW3.jpg)
+![PREVIEW4](https://github.com/Yonsm/ZhiModBus/blob/main/PREVIEW4.jpg)
 
 ## 4. 参考
 
