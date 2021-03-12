@@ -12,7 +12,7 @@ General ModBus Climate Component for HomeAssistant
 
 参见 [我的 Home Assistant 配置](https://github.com/Yonsm/.homeassistant) 中 [configuration.yaml](https://github.com/Yonsm/.homeassistant/blob/main/configuration.yaml)
 
-```
+```yaml
 modbus:
   type: rtuovertcp
   host: 192.168.x.x
@@ -28,10 +28,9 @@ climate:
     hvac_off: { registers: [1, 2, 3, 4], register_type: coil }
     target_temperature: { registers: [4, 8, 12, 16] }
     temperature: { registers: [3, 6, 9, 12], register_type: input, scale: 0.1 }
-
 ```
 
-```
+```yaml
 climate:
   - platform: zhimodbus
     hub: ModBus,
@@ -78,7 +77,7 @@ climate:
 
 ## 4. 参考
 
--   [ZhiDash](https://github.com/Yonsm/ZhiDash)
--   [Yonsm.NET](https://yonsm.github.io/modbus)
--   [Hassbian.com](https://bbs.hassbian.com/thread-3581-1-1.html)
--   [Yonsm's .homeassistant](https://github.com/Yonsm/.homeassistant)
+- [ZhiDash](https://github.com/Yonsm/ZhiDash)
+- [Yonsm.NET](https://yonsm.github.io/modbus)
+- [Hassbian.com](https://bbs.hassbian.com/thread-3581-1-1.html)
+- [Yonsm's .homeassistant](https://github.com/Yonsm/.homeassistant)
