@@ -19,12 +19,8 @@ from homeassistant.components.climate.const import (
     CURRENT_HVAC_OFF, CURRENT_HVAC_HEAT, CURRENT_HVAC_COOL, CURRENT_HVAC_IDLE,
     CURRENT_HVAC_DRY, CURRENT_HVAC_FAN,
 )
-from homeassistant.const import (
-    CONF_NAME, CONF_SLAVE, CONF_OFFSET, CONF_STRUCTURE, ATTR_TEMPERATURE)
-from homeassistant.components.modbus.const import (
-    CONF_HUB, DEFAULT_HUB, MODBUS_DOMAIN)
-from homeassistant.helpers.event import async_call_later
-import homeassistant.components.modbus as modbus
+from homeassistant.const import CONF_NAME, CONF_SLAVE, CONF_OFFSET, CONF_STRUCTURE, ATTR_TEMPERATURE
+from homeassistant.components.modbus.const import CONF_HUB, DEFAULT_HUB, MODBUS_DOMAIN
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
@@ -130,14 +126,14 @@ def setup_platform(hass, conf, add_devices, discovery_info=None):
     for index in range(100):
         if not bus.has_valid_register(index):
             break
-        entities.append(ModbusClimate(bus, name[index] if isinstance(name, list) else (name + str(index + 1)), index))
+        entities.append(ZhiModbusClimate(bus, name[index] if isinstance(name, list) else (name + str(index + 1)), index))
 
     if not entities:
         for prop in bus.regs:
             if CONF_REGISTER not in bus.regs[prop]:
                 _LOGGER.error("Invalid config %s/%s: no register", name, prop)
                 return
-        entities.append(ModbusClimate(bus, name[0] if isinstance(name, list) else name))
+        entities.append(ZhiModbusClimate(bus, name[0] if isinstance(name, list) else name))
 
     bus.count = len(entities)
     add_devices(entities, True)
@@ -276,7 +272,7 @@ class ClimateModbus():
             self.hub.write_register(slave, register, int(val))
 
 
-class ModbusClimate(ClimateEntity):
+class ZhiModbusClimate(ClimateEntity):
     """Representation of a Modbus climate device."""
 
     def __init__(self, bus, name, index=-1):
@@ -287,6 +283,11 @@ class ModbusClimate(ClimateEntity):
         self._values = {}
         self._last_on_operation = None
         self._skip_update = False
+
+    @property
+    def unique_id(self):
+        from homeassistant.util import slugify
+        return self.__class__.__name__.lower() + '.' + slugify(self.name)
 
     @property
     def name(self):
