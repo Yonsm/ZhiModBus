@@ -144,7 +144,7 @@ class ClimateModbus():
     def __init__(self, hass, conf):
         self.error = 0
         self.hass = hass
-        self._hub = conf.get(CONF_HUB)
+        self.hub = self.hass.data[MODBUS_DOMAIN][conf.get(CONF_HUB)]
         self.unit = hass.config.units.temperature_unit
         self.fan_modes = conf.get(CONF_FAN_MODES)
         self.hvac_modes = conf.get(CONF_HVAC_MODES)
@@ -185,10 +185,6 @@ class ClimateModbus():
                 continue
 
             self.regs[prop] = reg
-
-    @property
-    def hub(self):
-        return self.hass.data[MODBUS_DOMAIN][self._hub]
 
     def has_valid_register(self, index):
         """Check valid register."""
