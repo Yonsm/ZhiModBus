@@ -25,8 +25,6 @@ import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-DEPENDENCIES = ['modbus']
-
 CONF_AUX_HEAT_OFF_VALUE = 'aux_heat_off_value'
 CONF_AUX_HEAT_ON_VALUE = 'aux_heat_on_value'
 CONF_COUNT = 'count'
@@ -473,8 +471,7 @@ class ZhiModbusClimate(ClimateEntity):
         self._skip_update = True
         self._bus.write_value(self._index, prop, value)
         self._values[prop] = value
-        # self.async_write_ha_state()
-        # async_call_later(self.hass, 2, self.async_schedule_update_ha_state)
+        #self.schedule_update_ha_state()
 
     def get_mode(self, modes, prop):
         value = self.get_value(prop)
