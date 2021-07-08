@@ -17,10 +17,14 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_OFF, HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_HEAT_COOL,
     HVAC_MODE_AUTO,  HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY,
     CURRENT_HVAC_OFF, CURRENT_HVAC_HEAT, CURRENT_HVAC_COOL, CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_DRY, CURRENT_HVAC_FAN,
+    CURRENT_HVAC_DRY, CURRENT_HVAC_FAN
 )
 from homeassistant.const import CONF_NAME, CONF_SLAVE, CONF_OFFSET, CONF_STRUCTURE, ATTR_TEMPERATURE
-from homeassistant.components.modbus.const import CONF_HUB, DEFAULT_HUB, MODBUS_DOMAIN
+from homeassistant.components.modbus.const import (
+    CONF_HUB, DEFAULT_HUB, MODBUS_DOMAIN, 
+    CALL_TYPE_COIL, CALL_TYPE_REGISTER_HOLDING, CALL_TYPE_REGISTER_INPUT,
+    CALL_TYPE_WRITE_COIL, CALL_TYPE_WRITE_REGISTER
+)
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
@@ -239,12 +243,12 @@ class ClimateModbus():
         register_type, slave, register, scale, offset = self.reg_basic_info(reg, index)
         count = reg.get(CONF_COUNT, 1)
         if register_type == REGISTER_TYPE_COIL:
-            result = self.hub.read_coils(slave, register, count)
+            result = self.hub._pymodbus_call(slave, register, count, CALL_TYPE_COIL)
             return bool(result.bits[0])
         if register_type == REGISTER_TYPE_INPUT:
-            result = self.hub.read_input_registers(slave, register, count)
+            result = self.hub._pymodbus_call(slave, register, count, CALL_TYPE_REGISTER_INPUT)
         else:
-            result = self.hub.read_holding_registers(slave, register, count)
+            result = self.hub._pymodbus_call(slave, register, count, CALL_TYPE_REGISTER_HOLDING)
         val = 0
         registers = result.registers
         if reg.get(CONF_REVERSE_ORDER):
@@ -260,10 +264,10 @@ class ClimateModbus():
         reg = self.regs[prop]
         register_type, slave, register, scale, offset = self.reg_basic_info(reg, index)
         if register_type == REGISTER_TYPE_COIL:
-            self.hub.write_coil(slave, register, bool(value))
+            self.hub._pymodbus_call(slave, register, bool(value), CALL_TYPE_WRITE_COIL)
         else:
             val = (value - offset) / scale
-            self.hub.write_register(slave, register, int(val))
+            self.hub._pymodbus_call(slave, register, int(val), CALL_TYPE_WRITE_REGISTER)
 
 
 class ZhiModbusClimate(ClimateEntity):
