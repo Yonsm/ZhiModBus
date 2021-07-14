@@ -430,11 +430,11 @@ class ZhiModbusClimate(ClimateEntity):
 
     def set_fan_mode(self, fan_mode):
         """Set new fan mode."""
-        self.set_mode(self._fan_modes, REG_FAN_MODE, fan_mode)
+        self.set_mode(self._bus.fan_modes, REG_FAN_MODE, fan_mode)
 
     def set_swing_mode(self, swing_mode):
         """Set new swing mode."""
-        self.set_mode(self._swing_modes, REG_SWING_MODE, swing_mode)
+        self.set_mode(self._bus.swing_modes, REG_SWING_MODE, swing_mode)
 
     def set_preset_mode(self, preset_mode):
         """Set new hold mode."""
