@@ -455,7 +455,7 @@ class ZhiModbusClimate(ClimateEntity):
             _LOGGER.debug("Skip update on %s", self._name)
             return
 
-        _LOGGER.debug("Update on %s", self._name)
+        #_LOGGER.debug("Update on %s", self._name)
         for prop in self._bus.regs:
             try:
                 self._values[prop] = self._bus.read_value(self._index, prop)
