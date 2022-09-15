@@ -460,10 +460,12 @@ class ZhiModbusClimate(ClimateEntity):
             try:
                 self._values[prop] = self._bus.read_value(self._index, prop)
             except:
+                self._attr_available = False
                 self._bus.exception()
                 _LOGGER.debug("Exception %d on %s/%s", self._bus.error, self._name, prop)
                 return
         self._bus.error = 0
+        self._attr_available = True
 
     def get_value(self, prop):
         """Get property value."""
