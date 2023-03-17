@@ -203,27 +203,19 @@ class ClimateModbus():
         import time
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(5)
-        s.connect((self.hub._client.host, self.hub._client.port))
+        s.connect((self.hub._pb_params["host"], self.hub._pb_params["port"]))
         s.sendall(b'\x55\xAA\x55\x00\x25\x80\x03\xA8')
         s.close()
         time.sleep(1)
 
     def reconnect(self):
         _LOGGER.warn("Reconnect %s", self.hub._client)
-        from pymodbus.client.sync import ModbusTcpClient as ModbusClient
-        from pymodbus.transaction import ModbusRtuFramer as ModbusFramer
-        self.hub._client.close()
-        self.hub._client = ModbusClient(
-            host=self.hub._client.host,
-            port=self.hub._client.port,
-            framer=ModbusFramer,
-            timeout=self.hub._client.timeout)
-        self.hub._client.connect()
+        self.hass.add_job(self.hub.async_restart())
 
     def exception(self):
         turns = int(self.error / self.count)
         self.error += 1
-        if turns == 0 or (turns > 6 and turns % 10):
+        if turns != 0 and (turns > 6 and turns % 10):
             return
         if turns % 3 == 0:
             self.reset()
