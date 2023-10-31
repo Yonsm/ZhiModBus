@@ -21,7 +21,7 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.const import CONF_NAME, CONF_SLAVE, CONF_OFFSET, CONF_STRUCTURE, ATTR_TEMPERATURE
 from homeassistant.components.modbus.const import (
-    CONF_HUB, DEFAULT_HUB, MODBUS_DOMAIN, 
+    DEFAULT_HUB, MODBUS_DOMAIN, 
     CALL_TYPE_COIL, CALL_TYPE_REGISTER_HOLDING, CALL_TYPE_REGISTER_INPUT,
     CALL_TYPE_WRITE_COIL, CALL_TYPE_WRITE_REGISTER
 )
@@ -89,6 +89,7 @@ HVAC_ACTIONS = {
 }
 
 DEFAULT_NAME = 'ModBus'
+CONF_HUB = 'hub'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_HUB, default=DEFAULT_HUB): cv.string,
