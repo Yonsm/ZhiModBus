@@ -236,12 +236,12 @@ class ClimateModbus():
         register_type, slave, register, scale, offset = self.reg_basic_info(reg, index)
         count = reg.get(CONF_COUNT, 1)
         if register_type == REGISTER_TYPE_COIL:
-            result = self.hub._pymodbus_call(slave, register, count, CALL_TYPE_COIL)
+            result = self.hub.pb_call(slave, register, count, CALL_TYPE_COIL)
             return bool(result.bits[0])
         if register_type == REGISTER_TYPE_INPUT:
-            result = self.hub._pymodbus_call(slave, register, count, CALL_TYPE_REGISTER_INPUT)
+            result = self.hub.pb_call(slave, register, count, CALL_TYPE_REGISTER_INPUT)
         else:
-            result = self.hub._pymodbus_call(slave, register, count, CALL_TYPE_REGISTER_HOLDING)
+            result = self.hub.pb_call(slave, register, count, CALL_TYPE_REGISTER_HOLDING)
         val = 0
         registers = result.registers
         if reg.get(CONF_REVERSE_ORDER):
@@ -257,10 +257,10 @@ class ClimateModbus():
         reg = self.regs[prop]
         register_type, slave, register, scale, offset = self.reg_basic_info(reg, index)
         if register_type == REGISTER_TYPE_COIL:
-            self.hub._pymodbus_call(slave, register, bool(value), CALL_TYPE_WRITE_COIL)
+            self.hub.pb_call(slave, register, bool(value), CALL_TYPE_WRITE_COIL)
         else:
             val = (value - offset) / scale
-            self.hub._pymodbus_call(slave, register, int(val), CALL_TYPE_WRITE_REGISTER)
+            self.hub.pb_call(slave, register, int(val), CALL_TYPE_WRITE_REGISTER)
 
 
 class ZhiModbusClimate(ClimateEntity):
