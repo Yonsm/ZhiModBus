@@ -71,7 +71,7 @@ SUPPORTED_FEATURES = {
     REG_TARGET_TEMPERATURE: ClimateEntityFeature.TARGET_TEMPERATURE,
     REG_TEMPERATURE: 0,
 }
-    
+
 HVAC_ACTIONS = {
     HVACMode.OFF: HVACAction.OFF,
     HVACMode.HEAT: HVACAction.HEATING,
@@ -201,6 +201,10 @@ class ClimateModbus():
         s.sendall(b'\x55\xAA\x55\x00\x25\x80\x03\xA8')
         s.close()
 
+    async def reconnect(self, now=None):
+        _LOGGER.warn("Reconnect %s", self.hub._client)
+        await self.hub.async_restart()
+
     def exception(self):
         turns = int(self.error / self.count)
         self.error += 1
@@ -209,7 +213,7 @@ class ClimateModbus():
         if turns % 3 == 0:
             self.reset()
         from homeassistant.helpers.event import async_call_later
-        async_call_later(self.hass, 2, self.hub.async_restart)
+        async_call_later(self.hass, 1, self.reconnect)
 
     def reg_basic_info(self, reg, index):
         """Get register info."""
@@ -254,7 +258,7 @@ class ClimateModbus():
 
 class ZhiModbusClimate(ClimateEntity):
     """Representation of a Modbus climate device."""
-    
+
     _enable_turn_on_off_backwards_compatibility = False
 
     def __init__(self, bus, name, index=-1):
