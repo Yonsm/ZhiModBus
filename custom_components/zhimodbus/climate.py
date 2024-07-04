@@ -20,6 +20,7 @@ from homeassistant.components.modbus.const import (
 )
 import homeassistant.helpers.config_validation as cv
 
+
 _LOGGER = logging.getLogger(__name__)
 
 CONF_AUX_HEAT_OFF_VALUE = 'aux_heat_off_value'
@@ -194,17 +195,11 @@ class ClimateModbus():
         """Initialize USR module"""
         _LOGGER.warn("Reset %s", self.hub._client)
         import socket
-        import time
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(5)
         s.connect((self.hub._pb_params["host"], self.hub._pb_params["port"]))
         s.sendall(b'\x55\xAA\x55\x00\x25\x80\x03\xA8')
         s.close()
-        time.sleep(1)
-
-    def reconnect(self):
-        _LOGGER.warn("Reconnect %s", self.hub._client)
-        self.hass.add_job(self.hub.async_restart())
 
     def exception(self):
         turns = int(self.error / self.count)
@@ -213,7 +208,8 @@ class ClimateModbus():
             return
         if turns % 3 == 0:
             self.reset()
-        self.reconnect()
+        from homeassistant.helpers.event import async_call_later
+        async_call_later(self.hass, 2, self.hub.async_restart)
 
     def reg_basic_info(self, reg, index):
         """Get register info."""
@@ -229,12 +225,12 @@ class ClimateModbus():
         register_type, slave, register, scale, offset = self.reg_basic_info(reg, index)
         count = reg.get(CONF_COUNT, 1)
         if register_type == REGISTER_TYPE_COIL:
-            result = self.hub.async_pb_call(slave, register, count, CALL_TYPE_COIL)
+            result = await self.hub.async_pb_call(slave, register, count, CALL_TYPE_COIL)
             return bool(result.bits[0])
         if register_type == REGISTER_TYPE_INPUT:
-            result = self.hub.async_pb_call(slave, register, count, CALL_TYPE_REGISTER_INPUT)
+            result = await self.hub.async_pb_call(slave, register, count, CALL_TYPE_REGISTER_INPUT)
         else:
-            result = self.hub.async_pb_call(slave, register, count, CALL_TYPE_REGISTER_HOLDING)
+            result = await self.hub.async_pb_call(slave, register, count, CALL_TYPE_REGISTER_HOLDING)
         val = 0
         registers = result.registers
         if reg.get(CONF_REVERSE_ORDER):
@@ -250,10 +246,10 @@ class ClimateModbus():
         reg = self.regs[prop]
         register_type, slave, register, scale, offset = self.reg_basic_info(reg, index)
         if register_type == REGISTER_TYPE_COIL:
-            self.hub.async_pb_call(slave, register, bool(value), CALL_TYPE_WRITE_COIL)
+            await self.hub.async_pb_call(slave, register, bool(value), CALL_TYPE_WRITE_COIL)
         else:
             val = (value - offset) / scale
-            self.hub.async_pb_call(slave, register, int(val), CALL_TYPE_WRITE_REGISTER)
+            await self.hub.async_pb_call(slave, register, int(val), CALL_TYPE_WRITE_REGISTER)
 
 
 class ZhiModbusClimate(ClimateEntity):
